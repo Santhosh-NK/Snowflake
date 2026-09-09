@@ -1,0 +1,13 @@
+CREATE OR REPLACE DYNAMIC TABLE SALES_DB.SALES.DAILY_SALES
+    TARGET_LAG = '10 minutes' -- downstream
+    WAREHOUSE = TRANSFORM_WH
+    REFRESH_MODE = INCREMENTAL -- full_refresh / adaptive
+    INITIALIZE = ON_CREATE -- on_schedule
+    COMMENT = 'Daily sales summary refreshed automatically'
+AS
+SELECT
+    ORDER_DATE,
+    SUM(ORDER_AMOUNT) AS TOTAL_AMOUNT,
+    COUNT(*) AS ORDER_COUNT
+FROM SALES_DB.RAW.ORDERS
+GROUP BY ORDER_DATE;

@@ -1,0 +1,50 @@
+--- Three types of views -- normal view/ secure view/ materialized view 
+
+-- we can apply copy_grants and change_tracking
+
+-- Snowflake Enterprise Edition or higher for MATERIALIZED VIEW
+
+CREATE OR REPLACE VIEW SALES_DB.SALES.ACTIVE_ORDERS_VW
+(
+    ORDER_ID,
+    CUSTOMER_ID,
+    ORDER_DATE,
+    ORDER_AMOUNT
+)
+COMMENT = 'Shows active customer orders'
+AS
+SELECT
+    ORDER_ID,
+    CUSTOMER_ID,
+    ORDER_DATE,
+    ORDER_AMOUNT
+FROM SALES_DB.SALES.ORDERS
+WHERE ORDER_STATUS = 'ACTIVE';
+
+
+
+CREATE OR REPLACE SECURE VIEW SALES_DB.SALES.ACTIVE_ORDERS_VW
+(
+    ORDER_ID,
+    CUSTOMER_ID,
+    ORDER_DATE,
+    ORDER_AMOUNT
+)
+COMMENT = 'Shows active customer orders'
+AS
+SELECT
+    ORDER_ID,
+    CUSTOMER_ID,
+    ORDER_DATE,
+    ORDER_AMOUNT
+FROM SALES_DB.SALES.ORDERS
+WHERE ORDER_STATUS = 'ACTIVE';
+
+-- also can create a temporary view 
+
+CREATE MATERIALIZED VIEW DAILY_SALES_MV AS
+SELECT
+    ORDER_DATE,
+    SUM(ORDER_AMOUNT) AS TOTAL_AMOUNT
+FROM ORDERS
+GROUP BY 
